@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class OrderLine implements Serializable {
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
     private int quantity;

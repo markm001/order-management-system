@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public class Order{
+public class Order {
         @Id
         @GeneratedValue
         private long id;
@@ -16,9 +16,11 @@ public class Order{
                 joinColumns ={@JoinColumn(name="order_id", referencedColumnName = "id")})
         private List<OrderLine> orderLineList;
 
-        @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+        @ManyToOne(cascade = CascadeType.REMOVE)
         @JoinColumn(name = "customer_id", referencedColumnName = "id")
         private Customer customer;
+
+        @Temporal(TemporalType.DATE)
         private LocalDate dateOfSubmission;
 
 

@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 @Table(
         uniqueConstraints = @UniqueConstraint(columnNames = "skuCode")
 )
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Product {
     @Id
     @GeneratedValue
@@ -39,4 +40,6 @@ public class Product {
     public long getUnitPrice() {
         return unitPrice;
     }
+
+
 }

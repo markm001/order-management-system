@@ -1,11 +1,11 @@
 package com.ccat.ordersystem.model.service;
 
+import com.ccat.ordersystem.exception.InvalidIdException;
 import com.ccat.ordersystem.model.CustomerCreateRequest;
 import com.ccat.ordersystem.model.entity.Customer;
 import com.ccat.ordersystem.model.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,7 +25,11 @@ public class CustomerService {
         ));
     }
 
-    public Optional<Customer> getCustomerById(Long customerId) {
-        return customerRepository.findById(customerId);
+    public Customer getCustomerById(Long customerId) {
+        return customerRepository
+                .findById(customerId)
+                .orElseThrow(
+                        new InvalidIdException("Customer with ID:%d was not found.", customerId)
+                );
     }
 }

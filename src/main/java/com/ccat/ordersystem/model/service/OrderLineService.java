@@ -1,5 +1,6 @@
 package com.ccat.ordersystem.model.service;
 
+import com.ccat.ordersystem.exception.InvalidIdException;
 import com.ccat.ordersystem.model.OrderLineRequest;
 import com.ccat.ordersystem.model.entity.OrderLine;
 import com.ccat.ordersystem.model.entity.Product;
@@ -24,7 +25,6 @@ public class OrderLineService {
 
         List<Product> productList = productService.getProductsById(productIds);
 
-        //mapResults
         return request.stream()
                 .map(o -> mapToOrderLineResponse(productList, o))
                 .toList();
@@ -36,7 +36,9 @@ public class OrderLineService {
                 productList.stream()
                         .filter(p -> p.getId() == o.productId())
                         .findFirst()
-                        .orElseThrow(),
+                        .orElseThrow(
+                                new InvalidIdException("Product with ID:%d was not found.", o.productId())
+                        ),
                 o.quantity()
         );
     }

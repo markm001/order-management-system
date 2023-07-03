@@ -1,14 +1,15 @@
 package com.ccat.ordersystem.controller;
 
 import com.ccat.ordersystem.model.OrderCreateRequest;
+import com.ccat.ordersystem.model.OrderDateRequest;
+import com.ccat.ordersystem.model.OrderResponse;
+import com.ccat.ordersystem.model.ProductResponse;
 import com.ccat.ordersystem.model.entity.Order;
 import com.ccat.ordersystem.model.service.OrderService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class OrderController {
@@ -23,8 +24,28 @@ public class OrderController {
         return orderService.createOrder(request);
     }
 
-    @GetMapping("/order")
-    public String searchOrdersByDate(LocalDate date) {
-        return "Hello World from OrderController";
+    @PostMapping("/order/{date}")
+    public Order createOrderWithDate(
+            @RequestBody OrderCreateRequest request,
+            @PathVariable String date
+    ) {
+        return orderService.createOrder(request, date);
+    }
+
+    @RequestMapping(value = "/order", method = RequestMethod.GET)
+    public List<OrderResponse> searchOrdersByDateProductOrCustomer(
+            @RequestParam(required = false, name = "product") Optional<Long> productId,
+            @RequestParam(required = false, name = "customer") Optional<Long> customerId,
+            @RequestBody(required = false) OrderDateRequest request
+    ) {
+        if(request != null) {
+            return orderService.getOrdersByDate(request);
+        } else if (productId.isPresent()) {
+            return orderService.getOrdersByProduct(productId.get());
+        } else if (customerId.isPresent()) {
+            return orderService.getOrdersByCustomer(customerId.get());
+        }
+
+        return List.of();
     }
 }
