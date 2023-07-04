@@ -32,6 +32,11 @@ public class OrderService {
         this.orderLineService = orderLineService;
     }
 
+    /**
+     * Creates and saves an Order for the specified OrderCreateRequest Object
+     * @param request OrderCreateRequest Object
+     * @return the saved OrderResponse Object
+     */
     public OrderResponse createOrder(OrderCreateRequest request) {
         Order savedOrder = createAndSaveOrder(request, LocalDate.now());
 
@@ -40,7 +45,7 @@ public class OrderService {
 
     /**
      * Helper Method for creating Orders for a specified Date
-     * (Use for Test-Data)
+     * (Used for Test-Data)
      * @param request Entity to create
      * @param date Date of creation
      * @return OrderResponse Object
@@ -52,6 +57,11 @@ public class OrderService {
         return mapToOrderResponse(savedOrder);
     }
 
+    /**
+     * Returns all orders within a specified range
+     * @param request OrderDateRequest Object
+     * @return A List of OrderResponse Objects created between the specified dates.
+     */
     public List<OrderResponse> getOrdersByDate(OrderDateRequest request) {
         try {
             LocalDate lower = LocalDate.parse(request.lowerBound());
@@ -69,6 +79,11 @@ public class OrderService {
         }
     }
 
+    /**
+     * Finds a List of Orders containing the Product
+     * @param productId Primary-Key of the Product Entity to search for
+     * @return List of OrderResponse Objects or empty List, if none were found
+     */
     public List<OrderResponse> getOrdersByProduct(Long productId) {
         return orderRepository
                 .findAllByProductId(productId).stream()
@@ -76,6 +91,11 @@ public class OrderService {
                 .toList();
     }
 
+    /**
+     * Finds a List of Orders issued for a specific Customer
+     * @param customerId Primary-Key of the Customer Entity
+     * @return List of OrderResponse Objects or empty List, if none were found
+     */
     public List<OrderResponse> getOrdersByCustomer(Long customerId) {
         return orderRepository
                 .findAllByCustomerId(customerId).stream()
@@ -83,6 +103,14 @@ public class OrderService {
                 .toList();
     }
 
+    /**
+     * Updates the Quantity in an Order Line with the new quantity
+     * @param orderLineId Id of the Order Line to modify
+     * @param quantity Quantity to set
+     * @return The OrderLine-Id of the Order Line
+     * @throws InvalidIdException If the OrderLine-Id was not found
+     * @throws InvalidRequestException If a negative quantity was entered
+     */
     public Long updateOrderLineQuantityById(Long orderLineId, int quantity) {
         if(quantity < 0)
             throw new InvalidRequestException("Unable to update OrderLine with negative quantity:%d", quantity);
@@ -94,6 +122,12 @@ public class OrderService {
         return orderLineId;
     }
 
+    /**
+     * Finds a valid Customer, creates an OrderLine with valid Items and saves the Order Entity
+     * @param request OrderCreateRequest Object
+     * @param creationDate allows specifying a customer creation date for Testing (LocalDate.now() otherwise)
+     * @return The saved Order Entity
+     */
     private Order createAndSaveOrder(OrderCreateRequest request, LocalDate creationDate) {
         Customer customer = customerService.getCustomerById(request.customerId());
         List<OrderLine> orderLineList = orderLineService.getOrderLineItems(request.orderLineList());
@@ -106,6 +140,11 @@ public class OrderService {
         ));
     }
 
+    /**
+     * Maps the Order Entity to an OrderResponse Object
+     * @param order OrderEntity to map
+     * @return OrderResponse Object
+     */
     public static OrderResponse mapToOrderResponse(Order order) {
         return new OrderResponse(
                 order.getId(),

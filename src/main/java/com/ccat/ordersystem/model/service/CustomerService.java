@@ -16,6 +16,11 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
+    /**
+     * Creates a Customer Entity from a Request Object and saves it
+     * @param request CusterCreateRequest Object
+     * @return CustomerResponse Object
+     */
     public CustomerResponse createCustomer(CustomerCreateRequest request) {
         Customer response = customerRepository.save(new Customer(
                 UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
@@ -27,6 +32,11 @@ public class CustomerService {
         return mapToCustomerResponse(response);
     }
 
+    /**
+     * Retrieves a Customer Entity by its Id
+     * @param customerId Customer Primary-Key
+     * @return Customer Entity
+     */
     public Customer getCustomerById(Long customerId) {
         return customerRepository
                 .findById(customerId)
@@ -35,6 +45,11 @@ public class CustomerService {
                 );
     }
 
+    /**
+     * Maps a Customer Entity to a Response Object
+     * @param customer Customer Entity to be mapped
+     * @return Customer Response Object
+     */
     private static CustomerResponse mapToCustomerResponse(Customer customer) {
         return new CustomerResponse(
                 customer.getId(),

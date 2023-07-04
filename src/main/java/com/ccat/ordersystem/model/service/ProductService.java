@@ -17,6 +17,11 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    /**
+     * Creates a Product Entity with the specified values and saves it.
+     * @param request ProductCreateRequest
+     * @return ProductResponse Object
+     */
     public ProductResponse createProduct(ProductCreateRequest request) {
         Product response = productRepository.save(new Product(
                 UUID.randomUUID().getLeastSignificantBits() & Long.MAX_VALUE,
@@ -27,10 +32,20 @@ public class ProductService {
         return mapToProductResponse(response);
     }
 
+    /**
+     * Finds a List of Products their Product-Ids
+     * @param productIds List containing the desired Product Primary-Keys to find
+     * @return List of Product Entities
+     */
     public List<Product> getProductsById(List<Long> productIds) {
         return productRepository.findAllById(productIds);
     }
 
+    /**
+     * Maps a Product Entity to a Response Object
+     * @param product Product Entity to be mapped
+     * @return Product Response
+     */
     private static ProductResponse mapToProductResponse(Product product) {
         return new ProductResponse(
                 product.getId(),

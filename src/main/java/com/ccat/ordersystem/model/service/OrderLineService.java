@@ -16,8 +16,12 @@ public class OrderLineService {
         this.productService = productService;
     }
 
+    /**
+     * Retrieves a List of Products for the request and merges them into a List of OrderLine Entities
+     * @param request OrderLineRequest Object
+     * @return List of OrderLine Entities
+     */
     public List<OrderLine> getOrderLineItems(List<OrderLineRequest> request) {
-        //retrieve List of relevant Products
         List<Long> productIds = request.stream()
                 .map(OrderLineRequest::productId)
                 .toList();
@@ -25,11 +29,18 @@ public class OrderLineService {
         List<Product> productList = productService.getProductsById(productIds);
 
         return request.stream()
-                .map(o -> mapToOrderLineResponse(productList, o))
+                .map(o -> mapToOrderLine(productList, o))
                 .toList();
     }
 
-    private static OrderLine mapToOrderLineResponse(List<Product> productList, OrderLineRequest o) {
+    /**
+     * Filters the List of Products for a specific Id from the OrderLineRequest and joins it into a valid OrderLineEntity
+     * @param productList List of Products for each Id.
+     * @param o OrderLineRequest Object
+     * @return OrderLine Entity
+     * @throws InvalidIdException If no Product was found for the Id.
+     */
+    private static OrderLine mapToOrderLine(List<Product> productList, OrderLineRequest o) {
         return new OrderLine(
                 productList.stream()
                         .filter(p -> p.getId() == o.productId())
