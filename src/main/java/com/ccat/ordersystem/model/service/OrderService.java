@@ -1,5 +1,7 @@
 package com.ccat.ordersystem.model.service;
 
+import com.ccat.ordersystem.exception.InvalidDateException;
+import com.ccat.ordersystem.exception.InvalidIdException;
 import com.ccat.ordersystem.exception.InvalidRequestException;
 import com.ccat.ordersystem.model.OrderCreateRequest;
 import com.ccat.ordersystem.model.OrderDateRequest;
@@ -11,6 +13,7 @@ import com.ccat.ordersystem.model.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,13 +53,20 @@ public class OrderService {
     }
 
     public List<OrderResponse> getOrdersByDate(OrderDateRequest request) {
-        LocalDate lower = LocalDate.parse(request.lowerBound());
-        LocalDate upper = LocalDate.parse(request.upperBound());
+        try {
+            LocalDate lower = LocalDate.parse(request.lowerBound());
+            LocalDate upper = LocalDate.parse(request.upperBound());
 
-        return orderRepository
-                .findAllByDateOfSubmission(lower, upper).stream()
-                .map(OrderService::mapToOrderResponse)
-                .toList();
+            return orderRepository
+                    .findAllByDateOfSubmission(lower, upper).stream()
+                    .map(OrderService::mapToOrderResponse)
+                    .toList();
+
+        } catch (DateTimeParseException e) {
+            throw new InvalidDateException("Invalid dates:%s - %s entered.",
+                    request.lowerBound(),request.upperBound()
+            );
+        }
     }
 
     public List<OrderResponse> getOrdersByProduct(Long productId) {
@@ -79,7 +89,7 @@ public class OrderService {
         int success = orderRepository.updateOrderLineById(orderLineId, quantity);
 
         if(success == 0)
-            throw new InvalidRequestException("Unable to update OrderLine with Id:%d", orderLineId);
+            throw new InvalidIdException("Unable to update OrderLine with Id:%d", orderLineId);
 
         return orderLineId;
     }

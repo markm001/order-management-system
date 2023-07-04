@@ -34,7 +34,7 @@ public class OrderLineService {
                 productList.stream()
                         .filter(p -> p.getId() == o.productId())
                         .findFirst()
-                        .orElseThrow(
+                        .orElseThrow(() ->
                                 new InvalidIdException("Product with ID:%d was not found.", o.productId())
                         ),
                 o.quantity()

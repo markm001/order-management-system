@@ -30,7 +30,7 @@ public class CustomerService {
     public Customer getCustomerById(Long customerId) {
         return customerRepository
                 .findById(customerId)
-                .orElseThrow(
+                .orElseThrow(() ->
                         new InvalidIdException("Customer with ID:%d was not found.", customerId)
                 );
     }
