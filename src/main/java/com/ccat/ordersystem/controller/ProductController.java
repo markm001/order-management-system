@@ -1,7 +1,7 @@
 package com.ccat.ordersystem.controller;
 
 import com.ccat.ordersystem.model.ProductCreateRequest;
-import com.ccat.ordersystem.model.entity.Product;
+import com.ccat.ordersystem.model.ProductResponse;
 import com.ccat.ordersystem.model.service.ProductService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +16,7 @@ public class ProductController {
     }
 
     @PostMapping("/product")
-    public Product createProduct(@RequestBody ProductCreateRequest request) {
+    public ProductResponse createProduct(@RequestBody ProductCreateRequest request) {
         return productService.createProduct(request);
     }
 }

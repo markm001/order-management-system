@@ -1,5 +1,6 @@
 package com.ccat.ordersystem.model.service;
 
+import com.ccat.ordersystem.exception.InvalidRequestException;
 import com.ccat.ordersystem.model.OrderCreateRequest;
 import com.ccat.ordersystem.model.OrderDateRequest;
 import com.ccat.ordersystem.model.OrderResponse;
@@ -28,30 +29,24 @@ public class OrderService {
         this.orderLineService = orderLineService;
     }
 
-    public Order createOrder(OrderCreateRequest request) {
-        Customer customer = customerService.getCustomerById(request.customerId());
-        List<OrderLine> orderLineList = orderLineService.getOrderLineItems(request.orderLineList());
+    public OrderResponse createOrder(OrderCreateRequest request) {
+        Order savedOrder = createAndSaveOrder(request, LocalDate.now());
 
-        return orderRepository.save(new Order(
-                UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
-                orderLineList,
-                customer,
-                LocalDate.now()
-        ));
+        return mapToOrderResponse(savedOrder);
     }
 
-    public Order createOrder(OrderCreateRequest request, String date) {
-        Customer customer = customerService.getCustomerById(request.customerId());
-        List<OrderLine> orderLineList = orderLineService.getOrderLineItems(request.orderLineList());
-
+    /**
+     * Helper Method for creating Orders for a specified Date
+     * (Use for Test-Data)
+     * @param request Entity to create
+     * @param date Date of creation
+     * @return OrderResponse Object
+     */
+    public OrderResponse createOrder(OrderCreateRequest request, String date) {
         LocalDate creationDate = LocalDate.parse(date);
+        Order savedOrder = createAndSaveOrder(request, creationDate);
 
-        return orderRepository.save(new Order(
-                UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
-                orderLineList,
-                customer,
-                creationDate
-        ));
+        return mapToOrderResponse(savedOrder);
     }
 
     public List<OrderResponse> getOrdersByDate(OrderDateRequest request) {
@@ -78,7 +73,30 @@ public class OrderService {
                 .toList();
     }
 
-    private static OrderResponse mapToOrderResponse(Order order) {
+    public Long updateOrderLineQuantityById(Long orderLineId, int quantity) {
+        if(quantity < 0)
+            throw new InvalidRequestException("Unable to update OrderLine with negative quantity:%d", quantity);
+        int success = orderRepository.updateOrderLineById(orderLineId, quantity);
+
+        if(success == 0)
+            throw new InvalidRequestException("Unable to update OrderLine with Id:%d", orderLineId);
+
+        return orderLineId;
+    }
+
+    private Order createAndSaveOrder(OrderCreateRequest request, LocalDate creationDate) {
+        Customer customer = customerService.getCustomerById(request.customerId());
+        List<OrderLine> orderLineList = orderLineService.getOrderLineItems(request.orderLineList());
+
+        return orderRepository.save(new Order(
+                UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
+                orderLineList,
+                customer,
+                creationDate
+        ));
+    }
+
+    public static OrderResponse mapToOrderResponse(Order order) {
         return new OrderResponse(
                 order.getId(),
                 order.getOrderLineList(),

@@ -17,20 +17,21 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Product createProduct(ProductCreateRequest request) {
-        return productRepository.save(new Product(
+    public ProductResponse createProduct(ProductCreateRequest request) {
+        Product response = productRepository.save(new Product(
                 UUID.randomUUID().getLeastSignificantBits() & Long.MAX_VALUE,
                 request.name(),
                 request.skuCode(),
                 request.unitPrice()
         ));
+        return mapToProductResponse(response);
     }
 
     public List<Product> getProductsById(List<Long> productIds) {
         return productRepository.findAllById(productIds);
     }
 
-    public static ProductResponse mapToProductResponse(Product product) {
+    private static ProductResponse mapToProductResponse(Product product) {
         return new ProductResponse(
                 product.getId(),
                 product.getName(),

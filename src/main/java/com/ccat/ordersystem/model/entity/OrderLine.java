@@ -3,20 +3,21 @@ package com.ccat.ordersystem.model.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @Embeddable
 public class OrderLine implements Serializable {
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
     private int quantity;
 
     public OrderLine() { }
 
-    public OrderLine(Long id, Product product, int quantity) {
-        this.id = id;
+    public OrderLine(Product product, int quantity) {
+        this.id = UUID.randomUUID().getMostSignificantBits()&Long.MAX_VALUE;
         this.product = product;
         this.quantity = quantity;
     }

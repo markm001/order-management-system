@@ -1,7 +1,7 @@
 package com.ccat.ordersystem.controller;
 
 import com.ccat.ordersystem.model.CustomerCreateRequest;
-import com.ccat.ordersystem.model.entity.Customer;
+import com.ccat.ordersystem.model.CustomerResponse;
 import com.ccat.ordersystem.model.service.CustomerService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +16,7 @@ public class CustomerController {
     }
 
     @PostMapping("/customer")
-    public Customer createCustomer(@RequestBody CustomerCreateRequest request) {
+    public CustomerResponse createCustomer(@RequestBody CustomerCreateRequest request) {
         return customerService.createCustomer(request);
     }
 }

@@ -1,11 +1,11 @@
 package com.ccat.ordersystem.controller;
 
+import com.ccat.ordersystem.exception.InvalidRequestException;
 import com.ccat.ordersystem.model.OrderCreateRequest;
 import com.ccat.ordersystem.model.OrderDateRequest;
 import com.ccat.ordersystem.model.OrderResponse;
-import com.ccat.ordersystem.model.ProductResponse;
-import com.ccat.ordersystem.model.entity.Order;
 import com.ccat.ordersystem.model.service.OrderService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,12 +20,12 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    public Order createOrder(@RequestBody OrderCreateRequest request) {
+    public OrderResponse createOrder(@RequestBody OrderCreateRequest request) {
         return orderService.createOrder(request);
     }
 
     @PostMapping("/order/{date}")
-    public Order createOrderWithDate(
+    public OrderResponse createOrderWithDate(
             @RequestBody OrderCreateRequest request,
             @PathVariable String date
     ) {
@@ -46,6 +46,17 @@ public class OrderController {
             return orderService.getOrdersByCustomer(customerId.get());
         }
 
-        return List.of();
+        throw new InvalidRequestException(
+                "Request is missing a valid RequestParam or RequestBody."
+        );
+    }
+
+    @PutMapping("/order/orderline/{id}")
+    public ResponseEntity<Long> updateOrderLineQuantity(
+            @PathVariable(name = "id") Long orderLineId,
+            @RequestParam int quantity
+            ) {
+        Long modifiedId = orderService.updateOrderLineQuantityById(orderLineId, quantity);
+        return ResponseEntity.ok(modifiedId);
     }
 }

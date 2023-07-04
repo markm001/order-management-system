@@ -7,7 +7,6 @@ import com.ccat.ordersystem.model.entity.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class OrderLineService {
@@ -32,7 +31,6 @@ public class OrderLineService {
 
     private static OrderLine mapToOrderLineResponse(List<Product> productList, OrderLineRequest o) {
         return new OrderLine(
-                UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
                 productList.stream()
                         .filter(p -> p.getId() == o.productId())
                         .findFirst()
