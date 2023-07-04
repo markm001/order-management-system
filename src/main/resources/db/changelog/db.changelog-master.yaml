@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/create-customer.yaml
+  - include:
+      file: db/changelog/changeset/create-product.yaml
+  - include:
+      file: db/changelog/changeset/create-order.yaml

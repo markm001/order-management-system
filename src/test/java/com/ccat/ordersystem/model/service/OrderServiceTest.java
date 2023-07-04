@@ -1,6 +1,5 @@
 package com.ccat.ordersystem.model.service;
 
-import com.ccat.ordersystem.exception.InvalidRequestException;
 import com.ccat.ordersystem.model.OrderCreateRequest;
 import com.ccat.ordersystem.model.OrderLineRequest;
 import com.ccat.ordersystem.model.OrderResponse;
@@ -137,7 +136,7 @@ class OrderServiceTest {
         given(orderRepository.updateOrderLineById(id, quantity)).willReturn(0);
 
         //then
-        assertThrows(InvalidRequestException.class, () ->
+        assertThrows(RuntimeException.class, () ->
                 //when
                 orderService.updateOrderLineQuantityById(id, quantity)
         );

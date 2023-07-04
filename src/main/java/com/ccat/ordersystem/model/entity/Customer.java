@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(
+        name = "customers",
         uniqueConstraints = @UniqueConstraint(columnNames = "registrationCode")
 )
 public class Customer {
         @Id
-        @GeneratedValue
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private long id;
         private String registrationCode;
         private String fullName;

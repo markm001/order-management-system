@@ -22,6 +22,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE \"order_line\" SET \"quantity\"=:quantity WHERE \"id\"=:orderLineId", nativeQuery = true)
+    @Query(value = "UPDATE order_line SET quantity=:quantity WHERE id=:orderLineId", nativeQuery = true)
     int updateOrderLineById(Long orderLineId, int quantity);
 }

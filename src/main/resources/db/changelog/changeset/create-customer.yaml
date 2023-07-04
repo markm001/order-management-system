@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: CCAT
+      changes:
+        - createTable:
+            tableName: customers
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: email
+                  type: varchar(80)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: full_name
+                  type: varchar(80)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: registration_code
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: telephone
+                  type: varchar(80)
+                  constraints:
+                    nullable: false
+                    unique: true

@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: CCAT
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: date_of_submission
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: customer_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: customer_id
+                    references: customers
+  - changeSet:
+      id: 4
+      author: CCAT
+      changes:
+        - createTable:
+            tableName: order_line
+            columns:
+              - column:
+                  name: quantity
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: order_id
+                    references: orders
+              - column:
+                  name: product_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: product_id
+                    references: products

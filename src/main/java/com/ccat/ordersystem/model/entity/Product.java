@@ -5,11 +5,12 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(
+        name = "products",
         uniqueConstraints = @UniqueConstraint(columnNames = "skuCode")
 )
 public class Product {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private String skuCode;
